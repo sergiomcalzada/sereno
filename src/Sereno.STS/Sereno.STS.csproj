@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Sereno.Domain.EntityFramework\Sereno.Domain.EntityFramework.csproj" />
     <ProjectReference Include="..\Sereno.Domain\Sereno.Domain.csproj" />
+    <ProjectReference Include="..\Sereno.STS.UI\Sereno.STS.UI.csproj" />
   </ItemGroup>
 
 </Project>

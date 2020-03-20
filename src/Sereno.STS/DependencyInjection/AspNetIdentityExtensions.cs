@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Sereno.Domain.Entity;
 using Sereno.STS.AspNetIdentity;
 using Sereno.STS.DependencyInjection;
+using Sereno.STS.UI;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -21,6 +23,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
             services.AddScoped<IUserClaimsPrincipalFactory<User>, UserClaimsPrincipalFactory>();
             services.AddScoped<ISecurityStampValidator, Sereno.STS.AspNetIdentity.SecurityStampValidator>();
+
             services.AddSingleton<IPostConfigureOptions<IdentityOptions>, PostConfigureIdentityOptions>();
 
             return services;
