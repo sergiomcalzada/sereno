@@ -5,7 +5,7 @@ namespace Sereno.Domain.Entity
 {
     public class Client
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public bool Enabled { get; set; } = true;
         public string ClientId { get; set; }
         public string ProtocolType { get; set; } = ProtocolTypes.OpenIdConnect;
