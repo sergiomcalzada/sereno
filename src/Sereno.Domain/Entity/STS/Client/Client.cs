@@ -50,6 +50,9 @@ namespace Sereno.Domain.Entity
         public ICollection<ClientCorsOrigin> AllowedCorsOrigins { get; set; } = new Collection<ClientCorsOrigin>();
         public int? ConsentLifetime { get; set; }
         public string PairWiseSubjectSalt { get; set; }
-
+        public string UserCodeType { get; set; }
+        public int? UserSsoLifetime { get; set; }
+        public string Description { get; set; }
+        public int DeviceCodeLifetime { get; set; }
     }
 }
