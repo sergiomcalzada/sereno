@@ -14,6 +14,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     options.Events.RaiseFailureEvents = true;
                     options.Events.RaiseInformationEvents = true;
                     options.Events.RaiseErrorEvents = true;
+                    
                 })
                 .AddClientStore<ClientStore>()
                 .AddResourceStore<ResourceStore>()
