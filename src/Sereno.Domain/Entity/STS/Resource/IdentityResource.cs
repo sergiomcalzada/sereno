@@ -5,7 +5,7 @@ namespace Sereno.Domain.Entity
 {
     public class IdentityResource
     {
-        public int Id { get; set; }
+        public string Id { get; set; }
         public bool Enabled { get; set; } = true;
         public string Name { get; set; }
         public string DisplayName { get; set; }

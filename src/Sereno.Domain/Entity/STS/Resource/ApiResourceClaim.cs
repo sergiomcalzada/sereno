@@ -3,6 +3,6 @@
     public class ApiResourceClaim : BaseClaim
     {
         public ApiResource ApiResource { get; set; }
-        public int ApiResourceId { get; set; }
+        public string ApiResourceId { get; set; }
     }
 }
