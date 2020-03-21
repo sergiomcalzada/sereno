@@ -3,6 +3,6 @@
     public class ApiScopeClaim : BaseClaim
     {
         public ApiScope ApiScope { get; set; }
-        public int ApiScopeId { get; set; }
+        public string ApiScopeId { get; set; }
     }
 }

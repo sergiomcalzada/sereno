@@ -18,9 +18,13 @@ namespace Sereno.STS
             services.AddDbContext<DataContext>(dbOptions);
             services.AddAspNetIdentity();
             services.AddIdentityServer4();
+           
 
             services.AddAuthentication();
             services.AddAuthorization();
+
+            services.AddControllersWithViews();
+            services.AddRazorPages().AddUI();
 
             return services;
         }
@@ -28,13 +32,21 @@ namespace Sereno.STS
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public static IApplicationBuilder AddApi(this IApplicationBuilder app, IWebHostEnvironment env, IConfiguration configuration)
         {
-            
+            app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseIdentityServer();
 
             app.UseAuthorization();
-            app.UseIdentityServer();
+            app.UseAuthentication();
+
+            
            
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapDefaultControllerRoute();
+                endpoints.MapRazorPages();
+            });
 
             return app;
         }

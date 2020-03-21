@@ -67,12 +67,11 @@ namespace Sereno.STS.AspNetIdentity
 
                 if (!string.IsNullOrWhiteSpace(phoneNumber))
                 {
+                    var isPhoneNumberConfirmed = await this.UserManager.IsPhoneNumberConfirmedAsync(user);
                     identity.AddClaims(new[]
                     {
                         new Claim(JwtClaimTypes.PhoneNumber, phoneNumber),
-                        new Claim(JwtClaimTypes.PhoneNumberVerified,
-                            await this.UserManager.IsPhoneNumberConfirmedAsync(user) ? "true" : "false",
-                            ClaimValueTypes.Boolean)
+                        new Claim(JwtClaimTypes.PhoneNumberVerified,isPhoneNumberConfirmed.ToString().ToLower(),ClaimValueTypes.Boolean)
                     });
                 }
             }

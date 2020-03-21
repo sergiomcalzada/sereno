@@ -3,6 +3,6 @@
     public class ApiSecret : Secret
     {
         public ApiResource ApiResource { get; set; }
-        public int ApiResourceId { get; set; }
+        public string ApiResourceId { get; set; }
     }
 }
