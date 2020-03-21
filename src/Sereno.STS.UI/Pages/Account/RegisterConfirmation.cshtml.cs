@@ -13,13 +13,12 @@ namespace Sereno.STS.UI.Pages.Account
     [AllowAnonymous]
     public class RegisterConfirmationModel : PageModel
     {
-        private readonly IEmailSender _sender;
-        private readonly UserManager<User> _userManager;
 
-        public RegisterConfirmationModel(UserManager<User> userManager, IEmailSender sender)
+        private readonly UserManager<User> userManager;
+
+        public RegisterConfirmationModel(UserManager<User> userManager)
         {
-            this._userManager = userManager;
-            this._sender = sender;
+            this.userManager = userManager;
         }
 
         public string Email { get; set; }
@@ -35,7 +34,7 @@ namespace Sereno.STS.UI.Pages.Account
                 return this.RedirectToPage("/Index");
             }
 
-            var user = await this._userManager.FindByEmailAsync(email);
+            var user = await this.userManager.FindByEmailAsync(email);
             if (user == null)
             {
                 return this.NotFound($"Unable to load user with email '{email}'.");
@@ -46,13 +45,13 @@ namespace Sereno.STS.UI.Pages.Account
             this.DisplayConfirmAccountLink = true;
             if (this.DisplayConfirmAccountLink)
             {
-                var userId = await this._userManager.GetUserIdAsync(user);
-                var code = await this._userManager.GenerateEmailConfirmationTokenAsync(user);
+                var userId = await this.userManager.GetUserIdAsync(user);
+                var code = await this.userManager.GenerateEmailConfirmationTokenAsync(user);
                 code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                 this.EmailConfirmationUrl = this.Url.Page(
                     "/Account/ConfirmEmail",
                     null,
-                    new {area = "Identity", userId, code},
+                    new { userId, code},
                     this.Request.Scheme);
             }
 

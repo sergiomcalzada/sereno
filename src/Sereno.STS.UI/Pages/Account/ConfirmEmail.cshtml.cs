@@ -12,11 +12,11 @@ namespace Sereno.STS.UI.Pages.Account
     [AllowAnonymous]
     public class ConfirmEmailModel : PageModel
     {
-        private readonly UserManager<User> _userManager;
+        private readonly UserManager<User> userManager;
 
         public ConfirmEmailModel(UserManager<User> userManager)
         {
-            this._userManager = userManager;
+            this.userManager = userManager;
         }
 
         [TempData]
@@ -29,14 +29,14 @@ namespace Sereno.STS.UI.Pages.Account
                 return this.RedirectToPage("/Index");
             }
 
-            var user = await this._userManager.FindByIdAsync(userId);
+            var user = await this.userManager.FindByIdAsync(userId);
             if (user == null)
             {
                 return this.NotFound($"Unable to load user with ID '{userId}'.");
             }
 
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
-            var result = await this._userManager.ConfirmEmailAsync(user, code);
+            var result = await this.userManager.ConfirmEmailAsync(user, code);
             this.StatusMessage = result.Succeeded ? "Thank you for confirming your email." : "Error confirming your email.";
             return this.Page();
         }

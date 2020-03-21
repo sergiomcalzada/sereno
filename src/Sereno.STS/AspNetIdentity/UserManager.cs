@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -16,6 +17,20 @@ namespace Sereno.STS.AspNetIdentity
             store, optionsAccessor, passwordHasher, userValidators, passwordValidators, keyNormalizer, errors, services,
             logger)
         {
+        }
+
+        public override Task<IdentityResult> CreateAsync(User user)
+        {
+            //TODO: replace Id generation with snowflake or similar
+            user.Id = Guid.NewGuid().ToString().Replace("-", "");
+            return base.CreateAsync(user);
+        }
+
+        public override Task<IdentityResult> CreateAsync(User user, string password)
+        {
+            //TODO: replace Id generation with snowflake or similar
+            user.Id = Guid.NewGuid().ToString().Replace("-", "");
+            return base.CreateAsync(user, password);
         }
     }
 }

@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 
-namespace Sereno.STS.DependencyInjection
+namespace Sereno.STS.AspNetIdentity
 {
     public class PostConfigureIdentityOptions : IPostConfigureOptions<IdentityOptions>
     {
@@ -12,6 +9,9 @@ namespace Sereno.STS.DependencyInjection
         {
             options.User.RequireUniqueEmail = true;
             options.User.AllowedUserNameCharacters = options.User.AllowedUserNameCharacters + "\\" + "#";
+#if DEBUG
+            options.SignIn.RequireConfirmedAccount = true;
+#endif
         }
     }
 }
