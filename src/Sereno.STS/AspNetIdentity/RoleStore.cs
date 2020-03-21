@@ -5,7 +5,7 @@ using Sereno.Domain.EntityFramework;
 
 namespace Sereno.STS.AspNetIdentity
 {
-    public class RoleStore : RoleStore<Role>
+    public class RoleStore : RoleStore<Role, DataContext, string, UserRole, RoleClaim>
     {
         public RoleStore(DataContext context, IdentityErrorDescriber describer = null) : base(context, describer)
         {
