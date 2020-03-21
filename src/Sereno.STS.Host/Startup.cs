@@ -21,7 +21,7 @@ namespace Sereno.STS.Host
         {
             services.AddApi(this.Configuration, options =>
             {
-                options.UseInMemoryDatabase("");
+                options.UseInMemoryDatabase("a");
             });
         }
 

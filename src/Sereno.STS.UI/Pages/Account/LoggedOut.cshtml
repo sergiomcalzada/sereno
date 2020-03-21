@@ -1,6 +1,6 @@
-﻿@model Sereno.STS.UI.Controllers.Account.LoggedOutViewModel
-
-@{ 
+﻿@page
+@model Sereno.STS.UI.Pages.Account.LoggedOutModel
+@{
     // set this so the layout rendering sees an anonymous user
     ViewData["signed-out"] = true;
 }
@@ -29,6 +29,6 @@
 {
     @if (Model.AutomaticRedirectAfterSignOut)
     {
-        <script src="~/js/signout-redirect.js"></script>
+        <script src="~/UI/js/signout-redirect.js"></script>
     }
 }

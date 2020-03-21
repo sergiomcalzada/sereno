@@ -17,7 +17,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sereno.STS.Host", "Sereno.S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sereno.AspNetCore", "Sereno.AspNetCore\Sereno.AspNetCore.csproj", "{0387EE74-C6D0-467D-8864-D961CED23128}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sereno.STS.UI", "Sereno.STS.UI\Sereno.STS.UI.csproj", "{5119573E-2692-435F-A402-1D951FECDBC8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sereno.STS.UI", "Sereno.STS.UI\Sereno.STS.UI.csproj", "{5119573E-2692-435F-A402-1D951FECDBC8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
