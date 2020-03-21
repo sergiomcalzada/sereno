@@ -35,11 +35,12 @@ namespace Sereno.STS
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseIdentityServer();
 
             app.UseAuthorization();
             app.UseAuthentication();
 
-            app.UseIdentityServer();
+            
            
             app.UseEndpoints(endpoints =>
             {
