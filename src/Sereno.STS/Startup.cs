@@ -18,13 +18,13 @@ namespace Sereno.STS
             services.AddDbContext<DataContext>(dbOptions);
             services.AddAspNetIdentity();
             services.AddIdentityServer4();
-            services.AddUI();
+           
 
             services.AddAuthentication();
             services.AddAuthorization();
 
             services.AddControllersWithViews();
-            services.AddRazorPages();
+            services.AddRazorPages().AddUI();
 
             return services;
         }

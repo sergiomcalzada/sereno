@@ -4,30 +4,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     <StaticWebAssetBasePath>UI</StaticWebAssetBasePath>
-    
-    <!--<GetCurrentProjectStaticWebAssetsDependsOn>
-      $(GetCurrentProjectStaticWebAssetsDependsOn);
-      _UpdatedUIStaticWebAssets
-    </GetCurrentProjectStaticWebAssetsDependsOn>-->
-
   </PropertyGroup>
-
-  <!--<Target Name="_UpdatedUIStaticWebAssets">
-
-    <ItemGroup>
-      <StaticWebAsset Remove="@(StaticWebAsset)" />
-
-      <UIContent Include="wwwroot\**" />
-
-      <StaticWebAsset Include="@(UIContent->'%(FullPath)')" >
-        <SourceType></SourceType>
-        <SourceId>Sereno.STS.UI</SourceId>
-        <ContentRoot>$([MSBuild]::NormalizePath('$(MSBuildThisFileDirectory)wwwroot'))</ContentRoot>
-        <BasePath>UI</BasePath>
-        <RelativePath>%(RecursiveDir)%(FileName)%(Extension)</RelativePath>
-      </StaticWebAsset>
-    </ItemGroup>
-  </Target>-->
 
 
   <ItemGroup>
@@ -35,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.0" Condition="'$(Configuration)' == 'Debug'" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.1" />
     <PackageReference Include="IdentityServer4" Version="3.1.2" />
   </ItemGroup>
