@@ -23,7 +23,6 @@ namespace Microsoft.Extensions.DependencyInjection
             });
 #endif
             
-            //services.AddSingleton<IPostConfigureOptions<StaticFileOptions>, UIConfigureOptions>();
             return builder;
         }
     }

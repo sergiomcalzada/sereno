@@ -37,7 +37,7 @@ namespace Sereno.STS.UI.Controllers.Account
         {
             // if the TestUserStore is not in DI, then we'll just use the global users collection
             // this is where you would plug in your own custom identity management library (e.g. ASP.NET Identity)
-            this._users = users ?? new TestUserStore(TestUsers.Users);
+            this._users = users;
 
             this._interaction = interaction;
             this._clientStore = clientStore;
