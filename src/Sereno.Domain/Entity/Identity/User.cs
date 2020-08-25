@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Sereno.Domain.Entity
 {
-    public class User : IdentityUser<string>
+    public class User : IdentityUser<int>
     {
         
         /// <summary>
@@ -21,13 +21,7 @@ namespace Sereno.Domain.Entity
         /// Navigation property for this users login accounts.
         /// </summary>
         public virtual ICollection<UserLogin> Logins { get; } = new Collection<UserLogin>();
-
-        /// <summary>
-        /// Navigation property for this user assigned groups
-        /// </summary>
-        public virtual ICollection<UserGroup> Groups { get; } = new Collection<UserGroup>();
-
-
+        
     }
    
 }

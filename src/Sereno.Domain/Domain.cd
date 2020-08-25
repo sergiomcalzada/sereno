@@ -1,0 +1,268 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Sereno.Domain.Entity.Role" Collapsed="true">
+    <Position X="10.75" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAICAAAAAAAAAAAAAAAAAAAAAEAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>Entity\Identity\Role.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Claims" />
+      <Property Name="Users" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.RoleClaim" Collapsed="true">
+    <Position X="10.75" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entity\Identity\RoleClaim.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.User" Collapsed="true">
+    <Position X="12.75" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>Entity\Identity\User.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Claims" />
+      <Property Name="Logins" />
+      <Property Name="Roles" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.UserClaim" Collapsed="true">
+    <Position X="15.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entity\Identity\UserClaim.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.UserLogin">
+    <Position X="15.75" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entity\Identity\UserLogin.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.UserRole" Collapsed="true">
+    <Position X="13.75" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entity\Identity\UserRole.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.UserToken" Collapsed="true">
+    <Position X="21.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entity\Identity\UserToken.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.ApiResource" Collapsed="true">
+    <Position X="7.75" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACEAAAAAAgCKEAACAAABQAAgQAAIAAAAEAAEACAAE=</HashCode>
+      <FileName>Entity\STS\ApiResource.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="AllowedAccessTokenSigningAlgorithms" />
+      <Property Name="Properties" />
+      <Property Name="Roles" />
+      <Property Name="Scopes" />
+      <Property Name="Secrets" />
+      <Property Name="UserClaims" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.ApiResourceSecurityAlgorithm" Collapsed="true">
+    <Position X="3.25" Y="6.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAACAAAEAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>Entity\STS\ApiResource.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.ApiResourceClaim" Collapsed="true">
+    <Position X="7.75" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>Entity\STS\ApiResourceClaim.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.ApiResourceProperty" Collapsed="true">
+    <Position X="7.5" Y="12" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>Entity\STS\ApiResourceProperty.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.ApiResourceScope" Collapsed="true">
+    <Position X="4.75" Y="10.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAEBAAAAAAAAAQ=</HashCode>
+      <FileName>Entity\STS\ApiResourceScope.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.ApiResourceSecret" Collapsed="true">
+    <Position X="4.5" Y="8" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>Entity\STS\ApiResourceSecret.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.ApiScope" Collapsed="true">
+    <Position X="4.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACEAAAAAEgCIAAACAAABUIAAAAAAAAAAAAAEACAAE=</HashCode>
+      <FileName>Entity\STS\ApiScope.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="AllowedClients" />
+      <Property Name="Properties" />
+      <Property Name="UserClaims" />
+      <Property Name="AllowedResourceScopes" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.ApiScopeClaim" Collapsed="true">
+    <Position X="4.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAQ=</HashCode>
+      <FileName>Entity\STS\ApiScopeClaim.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.ApiScopeProperty" Collapsed="true">
+    <Position X="1.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAQ=</HashCode>
+      <FileName>Entity\STS\ApiScopeProperty.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.Client" Collapsed="true">
+    <Position X="10" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>FiACcFAAwAgoCIICyCABAQCBGHRCABOAQQEhAQACCCM=</HashCode>
+      <FileName>Entity\STS\Client.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="AllowedCorsOrigins" />
+      <Property Name="AllowedGrantTypes" />
+      <Property Name="AllowedScopes" />
+      <Property Name="Claims" />
+      <Property Name="ClientSecrets" />
+      <Property Name="IdentityProviderRestrictions" />
+      <Property Name="PostLogoutRedirectUris" />
+      <Property Name="Properties" />
+      <Property Name="RedirectUris" />
+      <Property Name="AllowedIdentityTokenSigningAlgorithms" />
+      <Property Name="PersistedGrants" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.ClientSecurityAlgorithm" Collapsed="true">
+    <Position X="9.75" Y="6.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAgAAAAAACAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Entity\STS\Client.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.ClientClaim" Collapsed="true">
+    <Position X="13" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAgAAAAAAAAAAAAAAAAQAgAAAAAAQ=</HashCode>
+      <FileName>Entity\STS\ClientClaim.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.ClientCorsOrigin" Collapsed="true">
+    <Position X="7" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAgAAAQ=</HashCode>
+      <FileName>Entity\STS\ClientCorsOrigin.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.ClientGrantType" Collapsed="true">
+    <Position X="10" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAgAAAAAAQAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Entity\STS\ClientGrantType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.ClientIdPRestriction" Collapsed="true">
+    <Position X="6.75" Y="6.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAEAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Entity\STS\ClientIdPRestriction.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.ClientPostLogoutRedirectUri" Collapsed="true">
+    <Position X="6.5" Y="2.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAgAAgAAAAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Entity\STS\ClientPostLogoutRedirectUri.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.ClientProperty" Collapsed="true">
+    <Position X="13" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Entity\STS\ClientProperty.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.ClientRedirectUri" Collapsed="true">
+    <Position X="7" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAgAAAAAAAAABAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Entity\STS\ClientRedirectUri.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.ClientScope" Collapsed="true">
+    <Position X="10" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAgAAAAAAAAAAAAAAABAAAAAAAAAQ=</HashCode>
+      <FileName>Entity\STS\ClientScope.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.ClientSecret" Collapsed="true">
+    <Position X="13" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Entity\STS\ClientSecret.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.DeviceFlowCodes" Collapsed="true">
+    <Position X="19.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIQAAAAAEAAgAAAAgAAAAAAMAAAAABAAAAAAgAAAAAA=</HashCode>
+      <FileName>Entity\STS\DeviceFlowCodes.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.IdentityResource" Collapsed="true">
+    <Position X="16.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACEAAAAAEgCIAAACAAABUAAAAAAAAAAAEAAEACAAE=</HashCode>
+      <FileName>Entity\STS\IdentityResource.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Properties" />
+      <Property Name="UserClaims" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.IdentityResourceClaim" Collapsed="true">
+    <Position X="16.75" Y="0.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAACAAAAAAAAQAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entity\STS\IdentityResourceClaim.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.IdentityResourceProperty" Collapsed="true">
+    <Position X="16.5" Y="4.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAACAAAAAAAAQAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entity\STS\IdentityResourceProperty.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Sereno.Domain.Entity.PersistedGrant" Collapsed="true">
+    <Position X="10" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAEAAgAAQAgAAAAgAIAAAAABAAAQAAgAAAAAQ=</HashCode>
+      <FileName>Entity\STS\PersistedGrant.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

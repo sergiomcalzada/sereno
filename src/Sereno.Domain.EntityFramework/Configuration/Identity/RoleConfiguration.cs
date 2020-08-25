@@ -20,10 +20,6 @@ namespace Sereno.Domain.EntityFramework.Configuration
       builder.HasMany(r => r.Users).WithOne(x => x.Role).HasForeignKey(ur => ur.RoleId).IsRequired();
       builder.HasMany(r => r.Claims).WithOne().HasForeignKey(rc => rc.RoleId).IsRequired();
 
-      builder.HasMany(r => r.Groups)
-          .WithOne(x => x.Role)
-          .HasForeignKey(ur => ur.RoleId);
-
       builder.HasOne(x => x.ApiResource).WithMany(c => c.Roles).HasForeignKey(f => f.ApiResourceId).IsRequired(false);
 
       //Fix index definitions

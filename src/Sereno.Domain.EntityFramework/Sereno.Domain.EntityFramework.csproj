@@ -5,11 +5,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Configuration\STS\PersistedGrant\**" />
+    <EmbeddedResource Remove="Configuration\STS\PersistedGrant\**" />
+    <None Remove="Configuration\STS\PersistedGrant\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Sereno.Domain\Sereno.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.7" />
   </ItemGroup>
 
 </Project>

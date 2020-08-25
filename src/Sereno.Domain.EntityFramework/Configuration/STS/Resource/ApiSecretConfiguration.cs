@@ -4,11 +4,11 @@ using Sereno.Domain.Entity;
 
 namespace Sereno.Domain.EntityFramework.Configuration.STS.Resource
 {
-    public class ApiSecretConfiguration : IEntityTypeConfiguration<ApiSecret>
+    public class ApiSecretConfiguration : IEntityTypeConfiguration<ApiResourceSecret>
     {
-        public void Configure(EntityTypeBuilder<ApiSecret> builder)
+        public void Configure(EntityTypeBuilder<ApiResourceSecret> builder)
         {
-            builder.ToTable("ApiSecret").HasKey(x => x.Id);
+            builder.ToTable("ApiResourceSecret").HasKey(x => x.Id);
 
             builder.Property(x => x.Description).HasMaxLength(4000);
             builder.Property(x => x.Value).HasMaxLength(2000);

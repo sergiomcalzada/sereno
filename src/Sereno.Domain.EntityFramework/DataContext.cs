@@ -7,7 +7,7 @@ using Sereno.Domain.Entity;
 
 namespace Sereno.Domain.EntityFramework
 {
-    public class DataContext : IdentityDbContext<User, Role, string, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>
+    public class DataContext : IdentityDbContext<User, Role, int, UserClaim, UserRole, UserLogin, RoleClaim, UserToken>
     {
         public DataContext(DbContextOptions<DataContext> options)
             : base(options)

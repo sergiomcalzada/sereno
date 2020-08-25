@@ -25,7 +25,7 @@ namespace Sereno.Domain.EntityFramework.Configuration.STS.Client
             builder.HasMany(x => x.Claims).WithOne(x => x.Client).IsRequired().HasForeignKey(x => x.ClientId).OnDelete(DeleteBehavior.Cascade);
             builder.HasMany(x => x.IdentityProviderRestrictions).WithOne(x => x.Client).HasForeignKey(x => x.ClientId).IsRequired().OnDelete(DeleteBehavior.Cascade);
             builder.HasMany(x => x.AllowedCorsOrigins).WithOne(x => x.Client).HasForeignKey(x => x.ClientId).IsRequired().OnDelete(DeleteBehavior.Cascade);
-
+            builder.HasMany(x => x.AllowedIdentityTokenSigningAlgorithms).WithOne(x => x.Client).HasForeignKey(x => x.ClientId).IsRequired().OnDelete(DeleteBehavior.Cascade);
 
         }
     }

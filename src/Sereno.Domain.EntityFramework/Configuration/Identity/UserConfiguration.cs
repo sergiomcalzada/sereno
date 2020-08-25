@@ -23,8 +23,6 @@ namespace Sereno.Domain.EntityFramework.Configuration
             builder.HasMany(u => u.Logins).WithOne().HasForeignKey(ul => ul.UserId).IsRequired();
             
             builder.HasMany(u => u.Roles).WithOne(u => u.User).HasForeignKey(ur => ur.UserId).IsRequired();
-
-            builder.HasMany(u => u.Groups).WithOne(u=>u.User).HasForeignKey(ug => ug.UserId).IsRequired();
             
         }
     }

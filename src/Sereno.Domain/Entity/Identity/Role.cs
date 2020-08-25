@@ -4,10 +4,10 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Sereno.Domain.Entity
 {
-    public class Role : IdentityRole<string>
+    public class Role : IdentityRole<int>
     {
         
-        public virtual string ApiResourceId { get; set; }
+        public virtual int ApiResourceId { get; set; }
         public virtual ApiResource ApiResource { get; set; }
 
         /// <summary>
@@ -20,10 +20,7 @@ namespace Sereno.Domain.Entity
         /// </summary>
         public virtual ICollection<RoleClaim> Claims { get; } = new Collection<RoleClaim>();
 
-        /// <summary>
-        /// Navigation property for the groups this role possesses.
-        /// </summary>
-        public virtual ICollection<GroupRole> Groups { get; } = new Collection<GroupRole>();
+       
 
     }
 }

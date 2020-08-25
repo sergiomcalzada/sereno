@@ -19,10 +19,9 @@ namespace Sereno.Domain.EntityFramework.Configuration.STS.Resource
             builder.HasMany(x => x.Secrets).WithOne(x => x.ApiResource).HasForeignKey(x => x.ApiResourceId).IsRequired().OnDelete(DeleteBehavior.Cascade);
             builder.HasMany(x => x.Scopes).WithOne(x => x.ApiResource).HasForeignKey(x => x.ApiResourceId).IsRequired().OnDelete(DeleteBehavior.Cascade);
             builder.HasMany(x => x.UserClaims).WithOne(x => x.ApiResource).HasForeignKey(x => x.ApiResourceId).IsRequired().OnDelete(DeleteBehavior.Cascade);
-
-            //Relaciones con Roles y grupos (descendientes directos)
-            builder.HasMany(x => x.Roles).WithOne(x => x.ApiResource).HasForeignKey(x => x.ApiResourceId).IsRequired(false);//.OnDelete(DeleteBehavior.Cascade);
-            builder.HasMany(x => x.Groups).WithOne(x => x.ApiResource).HasForeignKey(x => x.ApiResourceId).IsRequired(false);//.OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(x => x.Roles).WithOne(x => x.ApiResource).HasForeignKey(x => x.ApiResourceId).IsRequired(false).OnDelete(DeleteBehavior.Cascade);
+            builder.HasMany(x => x.AllowedAccessTokenSigningAlgorithms).WithOne(x => x.ApiResource).HasForeignKey(x => x.ApiResourceId).IsRequired(false).OnDelete(DeleteBehavior.Cascade);
+            
         }
     }
 }
