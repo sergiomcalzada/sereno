@@ -34,7 +34,7 @@ namespace Sereno.STS.Host
             }
 
             
-            app.AddApi(env, this.Configuration);
+            app.UseApi(env, this.Configuration);
         }
     }
 }

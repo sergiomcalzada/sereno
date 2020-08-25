@@ -1,6 +1,9 @@
 ﻿using System.IO;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Options;
+using Sereno.STS.UI.Extensions;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -17,7 +20,8 @@ namespace Microsoft.Extensions.DependencyInjection
             });
 
 #endif
-            
+            builder.Services
+                .AddSingleton<IPostConfigureOptions<RazorPagesOptions>, IdentityUiRazorPagesPostConfigureOptions>();
             return builder;
         }
     }
