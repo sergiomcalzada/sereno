@@ -17,7 +17,7 @@ namespace Sereno.STS.IdentityServer
             this.dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<IdentityResource>> FindIdentityResourcesByScopeAsync(IEnumerable<string> scopeNames)
+        public async Task<IEnumerable<IdentityResource>> FindIdentityResourcesByScopeNameAsync(IEnumerable<string> scopeNames)
         {
             var identity = await this.GetAllIdentityResources()
                 .Where(r => scopeNames.Contains(r.Name))
@@ -25,44 +25,53 @@ namespace Sereno.STS.IdentityServer
             return identity;
         }
 
-        public async Task<IEnumerable<ApiResource>> FindApiResourcesByScopeAsync(IEnumerable<string> scopeNames)
+        public async Task<IEnumerable<ApiScope>> FindApiScopesByNameAsync(IEnumerable<string> scopeNames)
+        {
+            var scopes = await this.GetAllApiScopes()
+                .Where(r => scopeNames.Contains(r.Name))
+                .ToArrayAsync();
+            return scopes;
+        }
+
+        public async Task<IEnumerable<ApiResource>> FindApiResourcesByScopeNameAsync(IEnumerable<string> scopeNames)
         {
             var api = await this.GetAllApiResources()
-                .Where(x => scopeNames.Contains(x.Name))
+                .Where(r => r.Scopes.Any(x => scopeNames.Contains(x)))
                 .ToArrayAsync();
-
             return api;
         }
 
-        public async Task<ApiResource> FindApiResourceAsync(string name)
+        public async Task<IEnumerable<ApiResource>> FindApiResourcesByNameAsync(IEnumerable<string> apiResourceNames)
         {
             var api = await this.GetAllApiResources()
-                .Where(x => x.Name == name)
-                .FirstOrDefaultAsync();
-
+                .Where(r => apiResourceNames.Contains(r.Name))
+                .ToArrayAsync();
             return api;
         }
 
         public async Task<Resources> GetAllResourcesAsync()
         {
-            var identity = await this.GetAllIdentityResources().ToArrayAsync();
-            var api = await this.GetAllApiResources().ToArrayAsync();
-            return new Resources(identity, api);
+            var identityResources = await this.GetAllIdentityResources().ToArrayAsync();
+            var apiResources = await this.GetAllApiResources().ToArrayAsync();
+            var apiScopes = await this.GetAllApiScopes().ToArrayAsync();
+            return new Resources(identityResources, apiResources, apiScopes);
         }
 
         private IQueryable<IdentityResource> GetAllIdentityResources()
         {
-            var identity = this.dbContext.Set<Domain.Entity.IdentityResource>()
-                                    .AsModel();
-
+            var identity = this.dbContext.Set<Domain.Entity.IdentityResource>().AsModel();
             return identity;
         }
 
         private IQueryable<ApiResource> GetAllApiResources()
         {
-            var api = this.dbContext.Set<Domain.Entity.ApiResource>()
-                                    .AsModel();
+            var api = this.dbContext.Set<Domain.Entity.ApiResource>().AsModel();
+            return api;
+        }
 
+        private IQueryable<ApiScope> GetAllApiScopes()
+        {
+            var api = this.dbContext.Set<Domain.Entity.ApiScope>().AsModel();
             return api;
         }
     }

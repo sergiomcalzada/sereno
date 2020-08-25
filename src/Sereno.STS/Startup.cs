@@ -33,7 +33,6 @@ namespace Sereno.STS
         public static IApplicationBuilder AddApi(this IApplicationBuilder app, IWebHostEnvironment env, IConfiguration configuration)
         {
             app.UseStaticFiles();
-
             app.UseRouting();
             app.UseIdentityServer();
 
