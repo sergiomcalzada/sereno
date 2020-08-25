@@ -2,19 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
-using System.Security.Principal;
 using System.Threading.Tasks;
 using IdentityModel;
 using IdentityServer4;
 using IdentityServer4.Events;
 using IdentityServer4.Services;
 using IdentityServer4.Stores;
-using IdentityServer4.Test;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Sereno.Domain.Entity;
+using Sereno.STS.UI.Extensions;
 
 namespace Sereno.STS.UI.Controllers.Account
 {
@@ -22,34 +23,32 @@ namespace Sereno.STS.UI.Controllers.Account
     [AllowAnonymous]
     public class ExternalController : Controller
     {
-        private readonly TestUserStore _users;
         private readonly IIdentityServerInteractionService _interaction;
         private readonly IClientStore _clientStore;
         private readonly ILogger<ExternalController> _logger;
         private readonly IEventService _events;
+        private readonly UserManager<User> userManager;
 
         public ExternalController(
             IIdentityServerInteractionService interaction,
             IClientStore clientStore,
             IEventService events,
-            ILogger<ExternalController> logger,
-            TestUserStore users = null)
+            UserManager<User> userManager,
+            ILogger<ExternalController> logger)
         {
-            // if the TestUserStore is not in DI, then we'll just use the global users collection
-            // this is where you would plug in your own custom identity management library (e.g. ASP.NET Identity)
-            this._users = users;
 
             this._interaction = interaction;
             this._clientStore = clientStore;
             this._logger = logger;
             this._events = events;
+            this.userManager = userManager;
         }
 
         /// <summary>
         /// initiate roundtrip to external authentication provider
         /// </summary>
         [HttpGet]
-        public async Task<IActionResult> Challenge(string provider, string returnUrl)
+        public IActionResult Challenge(string scheme, string returnUrl)
         {
             if (string.IsNullOrEmpty(returnUrl)) returnUrl = "~/";
 
@@ -59,27 +58,20 @@ namespace Sereno.STS.UI.Controllers.Account
                 // user might have clicked on a malicious link - should be logged
                 throw new Exception("invalid return URL");
             }
-
-            if (AccountOptions.WindowsAuthenticationSchemeName == provider)
+            
+            // start challenge and roundtrip the return URL and scheme 
+            var props = new AuthenticationProperties
             {
-                // windows authentication needs special handling
-                return await this.ProcessWindowsLoginAsync(returnUrl);
-            }
-            else
-            {
-                // start challenge and roundtrip the return URL and scheme 
-                var props = new AuthenticationProperties
+                RedirectUri = this.Url.Action(nameof(this.Callback)), 
+                Items =
                 {
-                    RedirectUri = this.Url.Action(nameof(this.Callback)),
-                    Items =
-                    {
-                        { "returnUrl", returnUrl },
-                        { "scheme", provider },
-                    }
-                };
+                    { "returnUrl", returnUrl }, 
+                    { "scheme", scheme },
+                }
+            };
 
-                return this.Challenge(props, provider);
-            }
+            return this.Challenge(props, scheme);
+            
         }
 
         /// <summary>
@@ -89,7 +81,7 @@ namespace Sereno.STS.UI.Controllers.Account
         public async Task<IActionResult> Callback()
         {
             // read external identity from the temporary cookie
-            var result = await this.HttpContext.AuthenticateAsync(IdentityServer4.IdentityServerConstants.ExternalCookieAuthenticationScheme);
+            var result = await this.HttpContext.AuthenticateAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
             if (result?.Succeeded != true)
             {
                 throw new Exception("External authentication error");
@@ -102,13 +94,13 @@ namespace Sereno.STS.UI.Controllers.Account
             }
 
             // lookup our user and external provider info
-            var (user, provider, providerUserId, claims) = this.FindUserFromExternalProvider(result);
+            var (user, provider, providerUserId, claims) = await this.FindUserFromExternalProvider(result);
             if (user == null)
             {
                 // this might be where you might initiate a custom workflow for user registration
                 // in this sample we don't show how that would be done, as our sample implementation
                 // simply auto-provisions new external user
-                user = this.AutoProvisionUser(provider, providerUserId, claims);
+                user = await this.userManager.AutoProvisionUser(provider, providerUserId, claims);
             }
 
             // this allows us to collect any additional claims or properties
@@ -116,14 +108,12 @@ namespace Sereno.STS.UI.Controllers.Account
             // this is typically used to store data needed for signout from those protocols.
             var additionalLocalClaims = new List<Claim>();
             var localSignInProps = new AuthenticationProperties();
-            this.ProcessLoginCallbackForOidc(result, additionalLocalClaims, localSignInProps);
-            //ProcessLoginCallbackForWsFed(result, additionalLocalClaims, localSignInProps);
-            //ProcessLoginCallbackForSaml2p(result, additionalLocalClaims, localSignInProps);
-
+            this.ProcessLoginCallback(result, additionalLocalClaims, localSignInProps);
+            
             // issue authentication cookie for user
-            var isuser = new IdentityServerUser(user.SubjectId)
+            var isuser = new IdentityServerUser(user.Id.ToString())
             {
-                DisplayName = user.Username,
+                DisplayName = user.UserName,
                 IdentityProvider = provider,
                 AdditionalClaims = additionalLocalClaims
             };
@@ -131,20 +121,20 @@ namespace Sereno.STS.UI.Controllers.Account
             await this.HttpContext.SignInAsync(isuser, localSignInProps);
 
             // delete temporary cookie used during external authentication
-            await this.HttpContext.SignOutAsync(IdentityServer4.IdentityServerConstants.ExternalCookieAuthenticationScheme);
+            await this.HttpContext.SignOutAsync(IdentityServerConstants.ExternalCookieAuthenticationScheme);
 
             // retrieve return URL
             var returnUrl = result.Properties.Items["returnUrl"] ?? "~/";
 
             // check if external login is in the context of an OIDC request
             var context = await this._interaction.GetAuthorizationContextAsync(returnUrl);
-            await this._events.RaiseAsync(new UserLoginSuccessEvent(provider, providerUserId, user.SubjectId, user.Username, true, context?.ClientId));
+            await this._events.RaiseAsync(new UserLoginSuccessEvent(provider, providerUserId, user.Id.ToString(), user.UserName, true, context?.Client.ClientId));
 
             if (context != null)
             {
-                if (await this._clientStore.IsPkceClientAsync(context.ClientId))
+                if (context.IsNativeClient())
                 {
-                    // if the client is PKCE then we assume it's native, so this change in how to
+                    // The client is native, so this change in how to
                     // return the response is for better UX for the end user.
                     return this.LoadingPage("Redirect", returnUrl);
                 }
@@ -153,54 +143,7 @@ namespace Sereno.STS.UI.Controllers.Account
             return this.Redirect(returnUrl);
         }
 
-        private async Task<IActionResult> ProcessWindowsLoginAsync(string returnUrl)
-        {
-            // see if windows auth has already been requested and succeeded
-            var result = await this.HttpContext.AuthenticateAsync(AccountOptions.WindowsAuthenticationSchemeName);
-            if (result?.Principal is WindowsPrincipal wp)
-            {
-                // we will issue the external cookie and then redirect the
-                // user back to the external callback, in essence, treating windows
-                // auth the same as any other external authentication mechanism
-                var props = new AuthenticationProperties()
-                {
-                    RedirectUri = this.Url.Action("Callback"),
-                    Items =
-                    {
-                        { "returnUrl", returnUrl },
-                        { "scheme", AccountOptions.WindowsAuthenticationSchemeName },
-                    }
-                };
-
-                var id = new ClaimsIdentity(AccountOptions.WindowsAuthenticationSchemeName);
-                id.AddClaim(new Claim(JwtClaimTypes.Subject, wp.FindFirst(ClaimTypes.PrimarySid).Value));
-                id.AddClaim(new Claim(JwtClaimTypes.Name, wp.Identity.Name));
-
-                // add the groups as claims -- be careful if the number of groups is too large
-                if (AccountOptions.IncludeWindowsGroups)
-                {
-                    var wi = wp.Identity as WindowsIdentity;
-                    var groups = wi.Groups.Translate(typeof(NTAccount));
-                    var roles = groups.Select(x => new Claim(JwtClaimTypes.Role, x.Value));
-                    id.AddClaims(roles);
-                }
-
-                await this.HttpContext.SignInAsync(
-                    IdentityServer4.IdentityServerConstants.ExternalCookieAuthenticationScheme,
-                    new ClaimsPrincipal(id),
-                    props);
-                return this.Redirect(props.RedirectUri);
-            }
-            else
-            {
-                // trigger windows auth
-                // since windows auth don't support the redirect uri,
-                // this URL is re-triggered when we call challenge
-                return this.Challenge(AccountOptions.WindowsAuthenticationSchemeName);
-            }
-        }
-
-        private (TestUser user, string provider, string providerUserId, IEnumerable<Claim> claims) FindUserFromExternalProvider(AuthenticateResult result)
+        private async Task<(User user, string provider, string providerUserId, IEnumerable<Claim> claims)> FindUserFromExternalProvider(AuthenticateResult result)
         {
             var externalUser = result.Principal;
 
@@ -219,18 +162,16 @@ namespace Sereno.STS.UI.Controllers.Account
             var providerUserId = userIdClaim.Value;
 
             // find external user
-            var user = this._users.FindByExternalProvider(provider, providerUserId);
+            var user = await this.userManager.FindByLoginAsync(provider, providerUserId);
+            //var user = this._users.FindByExternalProvider(provider, providerUserId);
 
             return (user, provider, providerUserId, claims);
         }
 
-        private TestUser AutoProvisionUser(string provider, string providerUserId, IEnumerable<Claim> claims)
-        {
-            var user = this._users.AutoProvisionUser(provider, providerUserId, claims.ToList());
-            return user;
-        }
-
-        private void ProcessLoginCallbackForOidc(AuthenticateResult externalResult, List<Claim> localClaims, AuthenticationProperties localSignInProps)
+       
+        // if the external login is OIDC-based, there are certain things we need to preserve to make logout work
+        // this will be different for WS-Fed, SAML2p or other protocols
+        private void ProcessLoginCallback(AuthenticateResult externalResult, List<Claim> localClaims, AuthenticationProperties localSignInProps)
         {
             // if the external system sent a session id claim, copy it over
             // so we can use it for single sign-out
@@ -241,19 +182,11 @@ namespace Sereno.STS.UI.Controllers.Account
             }
 
             // if the external provider issued an id_token, we'll keep it for signout
-            var id_token = externalResult.Properties.GetTokenValue("id_token");
-            if (id_token != null)
+            var idToken = externalResult.Properties.GetTokenValue("id_token");
+            if (idToken != null)
             {
-                localSignInProps.StoreTokens(new[] { new AuthenticationToken { Name = "id_token", Value = id_token } });
+                localSignInProps.StoreTokens(new[] { new AuthenticationToken { Name = "id_token", Value = idToken } });
             }
         }
-
-        //private void ProcessLoginCallbackForWsFed(AuthenticateResult externalResult, List<Claim> localClaims, AuthenticationProperties localSignInProps)
-        //{
-        //}
-
-        //private void ProcessLoginCallbackForSaml2p(AuthenticateResult externalResult, List<Claim> localClaims, AuthenticationProperties localSignInProps)
-        //{
-        //}
     }
 }

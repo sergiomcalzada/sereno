@@ -96,10 +96,10 @@ namespace Sereno.STS.UI.Pages.Account
                     // if the user cancels, send a result back into IdentityServer as if they 
                     // denied the consent (even if this client does not require consent).
                     // this will send back an access denied OIDC error response to the client.
-                    await this.interaction.GrantConsentAsync(context, ConsentResponse.Denied);
+                    await this.interaction.DenyAuthorizationAsync(context, AuthorizationError.AccessDenied);
 
                     // we can trust model.ReturnUrl since GetAuthorizationContextAsync returned non-null
-                    if (await this.clientStore.IsPkceClientAsync(context.ClientId))
+                    if (context.IsNativeClient())
                     {
                         // if the client is PKCE then we assume it's native, so this change in how to
                         // return the response is for better UX for the end user.
@@ -123,11 +123,11 @@ namespace Sereno.STS.UI.Pages.Account
                     this.logger.LogInformation("User logged in.");
 
                     var user = await this.userManager.FindByEmailAsync(this.Input.Email);
-                    await this.events.RaiseAsync(new UserLoginSuccessEvent(IdentityServerConstants.LocalIdentityProvider, user.Id, user.UserName, clientId: context?.ClientId));
+                    await this.events.RaiseAsync(new UserLoginSuccessEvent(IdentityServerConstants.LocalIdentityProvider, user.Id.ToString(), user.UserName, clientId: context?.Client.ClientId));
 
                     if (context != null)
                     {
-                        if (await this.clientStore.IsPkceClientAsync(context.ClientId))
+                        if (context.IsNativeClient())
                         {
                             // if the client is PKCE then we assume it's native, so this change in how to
                             // return the response is for better UX for the end user.
@@ -165,7 +165,7 @@ namespace Sereno.STS.UI.Pages.Account
                     return this.RedirectToPage("./Lockout");
                 }
 
-                await this.events.RaiseAsync(new UserLoginFailureEvent(this.Input.Email, "invalid credentials", clientId: context?.ClientId));
+                await this.events.RaiseAsync(new UserLoginFailureEvent(this.Input.Email, "invalid credentials", clientId: context?.Client.ClientId));
                 this.ModelState.AddModelError(string.Empty, "Invalid login attempt.");
                 await this.BuildLoginViewModelAsync(this.Input.ReturnUrl);
                 return this.Page();
@@ -207,9 +207,9 @@ namespace Sereno.STS.UI.Pages.Account
                     .ToList();
 
                 var allowLocal = true;
-                if (context?.ClientId != null)
+                if (context?.Client.ClientId != null)
                 {
-                    var client = await this.clientStore.FindEnabledClientByIdAsync(context.ClientId);
+                    var client = await this.clientStore.FindEnabledClientByIdAsync(context.Client.ClientId);
                     if (client != null)
                     {
                         allowLocal = client.EnableLocalLogin;
