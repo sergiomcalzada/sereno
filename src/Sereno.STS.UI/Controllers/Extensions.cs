@@ -1,7 +1,6 @@
 using System;
 using IdentityServer4.Models;
 using Microsoft.AspNetCore.Mvc;
-using Sereno.STS.UI.Controllers.Account;
 
 namespace Sereno.STS.UI.Controllers
 {
@@ -24,5 +23,24 @@ namespace Sereno.STS.UI.Controllers
             
             return controller.View(viewName, new RedirectViewModel { RedirectUrl = redirectUri });
         }
+    }
+
+    public class RedirectViewModel
+    {
+        public string RedirectUrl { get; set; }
+    }
+
+    public class ErrorViewModel
+    {
+        public ErrorViewModel()
+        {
+        }
+
+        public ErrorViewModel(string error)
+        {
+            this.Error = new ErrorMessage { Error = error };
+        }
+
+        public ErrorMessage Error { get; set; }
     }
 }

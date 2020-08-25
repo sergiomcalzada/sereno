@@ -20,6 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
             });
 
 #endif
+            builder.AddApplicationPart(typeof(IdentityUiRazorPagesPostConfigureOptions).Assembly);
             builder.Services
                 .AddSingleton<IPostConfigureOptions<RazorPagesOptions>, IdentityUiRazorPagesPostConfigureOptions>();
             return builder;
