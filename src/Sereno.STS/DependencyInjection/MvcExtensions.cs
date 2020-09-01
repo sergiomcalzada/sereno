@@ -7,7 +7,7 @@ using Sereno.STS.UI.Extensions;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
-    public static class ServiceCollectionExtensions
+    public static class MvcExtensions
     {
         public static IMvcBuilder AddUI(this IMvcBuilder builder)
         {
