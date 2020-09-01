@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using IdentityServer4;
+using IdentityServer4.Configuration;
 using IdentityServer4.Events;
 using IdentityServer4.Extensions;
 using IdentityServer4.Models;
@@ -11,25 +12,29 @@ using IdentityServer4.Validation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Sereno.STS.UI.Controllers;
 using Sereno.STS.UI.Pages.Shared;
 
 
-namespace Sereno.STS.UI.Pages.Consent
+namespace Sereno.STS.UI.Pages.Device
 {
-    public class IndexModel : PageModel
+    public class UserCodeConfirmationModel : PageModel
     {
         private readonly IEventService _events;
-        private readonly IIdentityServerInteractionService _interaction;
-        private readonly ILogger<IndexModel> _logger;
+        private readonly IOptions<IdentityServerOptions> _options;
+        private readonly IDeviceFlowInteractionService _interaction;
+        private readonly ILogger<UserCodeConfirmationModel> _logger;
 
 
-        public IndexModel(ILogger<IndexModel> logger, IIdentityServerInteractionService interaction,
-            IEventService events)
+        public UserCodeConfirmationModel(ILogger<UserCodeConfirmationModel> logger,
+            IDeviceFlowInteractionService interaction, IEventService events,
+            IOptions<IdentityServerOptions> options)
         {
             this._logger = logger;
             this._interaction = interaction;
             this._events = events;
+            this._options = options;
         }
 
         public string ClientName { get; set; }
@@ -43,77 +48,51 @@ namespace Sereno.STS.UI.Pages.Consent
         [BindProperty] public InputModel Input { get; set; } = new InputModel();
         [TempData] public string ErrorMessage { get; set; }
 
-        public async Task<IActionResult> OnGetAsync(string returnUrl)
+        public async Task<IActionResult> OnGetAsync(string userCode)
         {
-            var canCreate = await this.BuildViewModelAsync(returnUrl);
-            if (canCreate)
+            if (string.IsNullOrWhiteSpace(userCode))
             {
+                await this.BuildViewModelAsync(userCode);
                 return this.Page();
             }
 
-            return this.RedirectToPage("Error");
+            return this.RedirectToPage("/Error");
         }
 
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> OnPost()
         {
-            var model = this.Input;
+
             var result = await this.ProcessConsent();
-
-            if (result.IsRedirect)
-            {
-                var context = await this._interaction.GetAuthorizationContextAsync(model.ReturnUrl);
-                if (context?.IsNativeClient() == true)
-                {
-                    // The client is native, so this change in how to
-                    // return the response is for better UX for the end user.
-                    return this.RedirectToPage("Redirect", result.RedirectUri);
-                }
-
-                return this.Redirect(result.RedirectUri);
-            }
-
             if (result.HasValidationError)
             {
-                this.ModelState.AddModelError(string.Empty, result.ValidationError);
-            }
+                return this.RedirectToPage("/Error");
+            };
 
-            if (result.ShowView)
-            {
-                return this.Page();
-            }
-
-            return this.RedirectToPage("Error");
+            return this.RedirectToPage("Success");
         }
 
-        /*****************************************/
-        /* helper APIs for the ConsentController */
-        /*****************************************/
+
         private async Task<ProcessConsentResult> ProcessConsent()
         {
             var model = this.Input;
             var result = new ProcessConsentResult();
 
-            // validate return url is still valid
-            var request = await this._interaction.GetAuthorizationContextAsync(model.ReturnUrl);
-            if (request == null)
-            {
-                return result;
-            }
+            var request = await this._interaction.GetAuthorizationContextAsync(model.UserCode);
+            if (request == null) return result;
 
             ConsentResponse grantedConsent = null;
 
             // user clicked 'no' - send back the standard 'access_denied' response
-            if (model?.Button == "no")
+            if (model.Button == "no")
             {
                 grantedConsent = new ConsentResponse { Error = AuthorizationError.AccessDenied };
 
                 // emit event
-                await this._events.RaiseAsync(new ConsentDeniedEvent(this.User.GetSubjectId(), request.Client.ClientId,
-                    request.ValidatedResources.RawScopeValues));
+                await this._events.RaiseAsync(new ConsentDeniedEvent(this.User.GetSubjectId(), request.Client.ClientId, request.ValidatedResources.RawScopeValues));
             }
             // user clicked 'yes' - validate the data
-            else if (model?.Button == "yes")
+            else if (model.Button == "yes")
             {
                 // if the user consented to some scope, build the response model
                 if (model.ScopesConsented != null && model.ScopesConsented.Any())
@@ -121,7 +100,7 @@ namespace Sereno.STS.UI.Pages.Consent
                     var scopes = model.ScopesConsented;
                     if (ConsentOptions.EnableOfflineAccess == false)
                     {
-                        scopes = scopes.Where(x => x != IdentityServerConstants.StandardScopes.OfflineAccess);
+                        scopes = scopes.Where(x => x != IdentityServer4.IdentityServerConstants.StandardScopes.OfflineAccess);
                     }
 
                     grantedConsent = new ConsentResponse
@@ -132,9 +111,7 @@ namespace Sereno.STS.UI.Pages.Consent
                     };
 
                     // emit event
-                    await this._events.RaiseAsync(new ConsentGrantedEvent(this.User.GetSubjectId(),
-                        request.Client.ClientId, request.ValidatedResources.RawScopeValues,
-                        grantedConsent.ScopesValuesConsented, grantedConsent.RememberConsent));
+                    await this._events.RaiseAsync(new ConsentGrantedEvent(this.User.GetSubjectId(), request.Client.ClientId, request.ValidatedResources.RawScopeValues, grantedConsent.ScopesValuesConsented, grantedConsent.RememberConsent));
                 }
                 else
                 {
@@ -149,7 +126,7 @@ namespace Sereno.STS.UI.Pages.Consent
             if (grantedConsent != null)
             {
                 // communicate outcome of consent back to identityserver
-                await this._interaction.GrantConsentAsync(request, grantedConsent);
+                await this._interaction.HandleRequestAsync(model.UserCode, grantedConsent);
 
                 // indicate that's it ok to redirect back to authorization endpoint
                 result.RedirectUri = model.ReturnUrl;
@@ -158,27 +135,25 @@ namespace Sereno.STS.UI.Pages.Consent
             else
             {
                 // we need to redisplay the consent UI
-                result.ShowView = await this.BuildViewModelAsync(model.ReturnUrl);
+                result.ShowView = await this.BuildViewModelAsync(model.UserCode);
             }
 
             return result;
         }
 
-        private async Task<bool> BuildViewModelAsync(string returnUrl)
+        private async Task<bool> BuildViewModelAsync(string userCode)
         {
-            var request = await this._interaction.GetAuthorizationContextAsync(returnUrl);
+            var request = await this._interaction.GetAuthorizationContextAsync(userCode);
             if (request != null)
             {
-                this.CreateConsentViewModel(returnUrl, request);
+                this.CreateConsentViewModel(userCode, request);
                 return true;
             }
-
-            this._logger.LogError("No consent request matching request: {0}", returnUrl);
-
+            this._logger.LogError("No consent request matching user code: {0}", userCode);
             return false;
         }
 
-        private void CreateConsentViewModel(string returnUrl, AuthorizationRequest request)
+        private void CreateConsentViewModel(string userCode, DeviceFlowAuthorizationRequest request)
         {
             var model = this.Input;
             var check = model == null;
@@ -186,11 +161,12 @@ namespace Sereno.STS.UI.Pages.Consent
 
             this.Input = new InputModel
             {
-                RememberConsent = model?.RememberConsent ?? true,
-                ScopesConsented = scopesConsented,
+                UserCode = userCode,
                 Description = model?.Description,
 
-                ReturnUrl = returnUrl
+                RememberConsent = model?.RememberConsent ?? true,
+                ScopesConsented = model?.ScopesConsented ?? Enumerable.Empty<string>(),
+
             };
 
             this.ClientName = request.Client.ClientName ?? request.Client.ClientId;
@@ -198,25 +174,24 @@ namespace Sereno.STS.UI.Pages.Consent
             this.ClientLogoUrl = request.Client.LogoUri;
             this.AllowRememberConsent = request.Client.AllowRememberConsent;
             this.IdentityScopes = ScopeModel.GetIdentityResourcesFromRequest(request.ValidatedResources, scopesConsented, check);
+
             this.ApiScopes = ScopeModel.GetApiScopeModelsFromRequest(request.ValidatedResources, scopesConsented, check);
-            
+
         }
 
-        
 
         public class InputModel
         {
+            public string UserCode { get; set; }
             public string Button { get; set; }
             public IEnumerable<string> ScopesConsented { get; set; }
             public bool RememberConsent { get; set; }
-            public string ReturnUrl { get; set; }
             public string Description { get; set; }
+            public string ReturnUrl { get; set; }
         }
-
 
         public class ProcessConsentResult
         {
-            public bool IsRedirect => this.RedirectUri != null;
             public string RedirectUri { get; set; }
             public Client Client { get; set; }
 
@@ -225,6 +200,7 @@ namespace Sereno.STS.UI.Pages.Consent
             public bool HasValidationError => this.ValidationError != null;
             public string ValidationError { get; set; }
         }
+
 
     }
 }

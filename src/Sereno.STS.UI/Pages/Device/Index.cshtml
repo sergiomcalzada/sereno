@@ -1,0 +1,24 @@
+﻿@page
+@model Sereno.STS.UI.Pages.Device.IndexModel
+
+    <div class="page-device-code">
+        <div class="lead">
+            <h1>User Code</h1>
+            <p>Please enter the code displayed on your device.</p>
+        </div>
+
+        <partial name="_ValidationSummary" />
+
+        <div class="row">
+            <div class="col-sm-6">
+                <form method="post">
+                    <div class="form-group">
+                        <label for="userCode">User Code:</label>
+                        <input class="form-control" asp-for="Input.UserCode" autofocus />
+                    </div>
+
+                    <button class="btn btn-primary" name="button">Submit</button>
+                </form>
+            </div>
+        </div>
+    </div>

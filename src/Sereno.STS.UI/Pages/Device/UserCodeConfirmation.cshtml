@@ -1,5 +1,5 @@
-@model Sereno.STS.UI.Controllers.Device.DeviceAuthorizationViewModel
-
+﻿@page
+@model Sereno.STS.UI.Pages.Device.UserCodeConfirmationModel
 <div class="page-device-confirmation">
     <div class="lead">
         @if (Model.ClientLogoUrl != null)
@@ -10,10 +10,10 @@
             @Model.ClientName
             <small class="text-muted">is requesting your permission</small>
         </h1>
-        @if (Model.ConfirmUserCode)
+        @*@if (Model.ConfirmUserCode)
         {
             <p>Please confirm that the authorization request quotes the code: <strong>@Model.UserCode</strong>.</p>
-        }
+        }*@
         <p>Uncheck the permissions you do not wish to grant.</p>
     </div>
 
@@ -23,8 +23,8 @@
         </div>
     </div>
 
-    <form asp-action="Callback">
-        <input asp-for="UserCode" type="hidden" value="@Model.UserCode" />
+    <form method="post">
+        <input asp-for="@Model.Input.UserCode" type="hidden" value="@Model.Input.UserCode" />
         <div class="row">
             <div class="col-sm-8">
                 @if (Model.IdentityScopes.Any())
@@ -70,7 +70,7 @@
                             Description
                         </div>
                         <div class="card-body">
-                            <input class="form-control" placeholder="Description or name of device" asp-for="Description" autofocus>
+                            <input class="form-control" placeholder="Description or name of device" asp-for="@Model.Input.Description" autofocus>
                         </div>
                     </div>
                 </div>
@@ -79,8 +79,8 @@
                 {
                     <div class="form-group">
                         <div class="form-check">
-                            <input class="form-check-input" asp-for="RememberConsent">
-                            <label class="form-check-label" asp-for="RememberConsent">
+                            <input class="form-check-input" asp-for="@Model.Input.RememberConsent">
+                            <label class="form-check-label" asp-for="@Model.Input.RememberConsent">
                                 <strong>Remember My Decision</strong>
                             </label>
                         </div>
