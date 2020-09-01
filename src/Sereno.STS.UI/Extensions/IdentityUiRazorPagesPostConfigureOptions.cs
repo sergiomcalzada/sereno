@@ -15,6 +15,7 @@ namespace Sereno.STS.UI.Extensions
             options.Conventions.AuthorizePage("/Account/Logout");
 
             options.Conventions.AuthorizeFolder("/Consent");
+            options.Conventions.AuthorizeFolder("/Grants");
         }
     }
 }
