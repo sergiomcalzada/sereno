@@ -16,6 +16,7 @@ namespace Sereno.STS.UI.Extensions
 
             options.Conventions.AuthorizeFolder("/Consent");
             options.Conventions.AuthorizeFolder("/Grants");
+            options.Conventions.AuthorizeFolder("/Diagnostics");
         }
     }
 }
