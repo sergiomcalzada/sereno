@@ -2,9 +2,9 @@ using System;
 using IdentityServer4.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Sereno.STS.UI.Controllers
+namespace Sereno.STS.UI.Extensions
 {
-    public static class Extensions
+    public static class AuthorizationRequestExtensions
     {
         /// <summary>
         /// Checks if the redirect URI is for a native client.

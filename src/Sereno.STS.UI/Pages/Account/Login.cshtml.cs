@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Sereno.Domain.Entity;
-using Sereno.STS.UI.Controllers;
+using Sereno.STS.UI.Extensions;
 
 namespace Sereno.STS.UI.Pages.Account
 {

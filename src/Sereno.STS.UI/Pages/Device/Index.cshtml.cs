@@ -1,38 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using IdentityServer4;
-using IdentityServer4.Configuration;
-using IdentityServer4.Events;
-using IdentityServer4.Extensions;
-using IdentityServer4.Models;
-using IdentityServer4.Services;
-using IdentityServer4.Validation;
+﻿using IdentityServer4.Configuration;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Sereno.STS.UI.Controllers;
 
 
 namespace Sereno.STS.UI.Pages.Device
 {
     public class IndexModel : PageModel
     {
-        private readonly IEventService _events;
         private readonly IOptions<IdentityServerOptions> _options;
-        private readonly IDeviceFlowInteractionService _interaction;
         private readonly ILogger<IndexModel> _logger;
 
 
-        public IndexModel(ILogger<IndexModel> logger,
-            IDeviceFlowInteractionService interaction, IEventService events,
-            IOptions<IdentityServerOptions> options)
+        public IndexModel(ILogger<IndexModel> logger, IOptions<IdentityServerOptions> options)
         {
             this._logger = logger;
-            this._interaction = interaction;
-            this._events = events;
             this._options = options;
         }
 
