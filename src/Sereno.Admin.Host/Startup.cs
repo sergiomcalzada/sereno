@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Sereno.Admin.Host.Options.Swagger;
 
 namespace Sereno.Admin.Host
 {
@@ -19,6 +20,7 @@ namespace Sereno.Admin.Host
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddApi(this.Configuration);
+            services.AddSwagger();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -29,8 +31,10 @@ namespace Sereno.Admin.Host
                 app.UseDeveloperExceptionPage();
             }
 
-            
-            app.AddApi(env, this.Configuration);
+            app.UseSwagger();
+            app.UseSwaggerUI();
+            app.UseStaticFiles();
+            app.UseApi(env, this.Configuration);
         }
     }
 }

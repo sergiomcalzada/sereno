@@ -18,7 +18,7 @@ namespace Sereno.Admin
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public static IApplicationBuilder AddApi(this IApplicationBuilder app, IWebHostEnvironment env, IConfiguration configuration)
+        public static IApplicationBuilder UseApi(this IApplicationBuilder app, IWebHostEnvironment env, IConfiguration configuration)
         {
             
 
